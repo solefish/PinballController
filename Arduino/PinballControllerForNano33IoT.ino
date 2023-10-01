@@ -31,8 +31,8 @@
 #define KB_PL       KEY_RETURN          // プランジャー
 #define KB_FL       KEY_LEFT_SHIFT      // 左フリッパー
 #define KB_FR       KEY_RIGHT_SHIFT     // 右フリッパー
-#define KB_NL       KEY_RIGHT_CTRL      // 左ナッジ（左右逆）
-#define KB_NR       KEY_LEFT_CTRL       // 右ナッジ（左右逆）
+#define KB_NL       KEY_RIGHT_ALT       // 左ナッジ（左右逆）
+#define KB_NR       KEY_LEFT_ALT        // 右ナッジ（左右逆）
 #define KB_NU       ' '                 // 上ナッジ
 
 //------------------------------------------------------------------------------
