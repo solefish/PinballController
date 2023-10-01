@@ -24,7 +24,7 @@
 //       その場合はあらかじめゲームのキー設定で認識できるキーに設定を変更してください。
 
 //      定義名      送信するキー           機能
-#define KB_ST       KEY_ESC             // ポーズ
+#define KB_ST       KEY_ESC             // スタート(ポーズ)
 #define KB_PL       KEY_RETURN          // プランジャー
 #define KB_FL       KEY_LEFT_SHIFT      // 左フリッパー
 #define KB_FR       KEY_RIGHT_SHIFT     // 右フリッパー
