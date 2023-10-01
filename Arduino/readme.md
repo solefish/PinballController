@@ -2,6 +2,7 @@
 
 ## PinballFX2Controller.ino
 Pinball FX2用に作られた、最も古いバージョン。今後は更新しません。
+
 また、Pinball FX2はキーバインドが変更できないのと、キーボード入力を受け付けないバグがあるため、実際にPinball FX2で使用することはできません。
 
 ## PinballController.ino
