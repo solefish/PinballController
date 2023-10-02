@@ -8,7 +8,7 @@ Pinball FX2用に作られた、最も古いバージョン。Arduino Leonardo�
 
 ## PinballController.ino
 
-Pinball FX用に作られた、最も新しいバージョン。Arduino LeonardoとArduino UNO R4で動作を確認しています。
+Pinball FX用に作られた、最も新しいバージョン。Arduino LeonardoとArduino UNO R4 Minimaで動作を確認しています。
 
 今後はこちらのメンテナンスがメインになります。
 
