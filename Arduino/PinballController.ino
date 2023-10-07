@@ -6,7 +6,9 @@
 // 履歴
 // ver 1.0  2013/07/03  初出
 // ver 1.1  2020/03/25  キーボードライブラリを明示的にインクルードするよう修正
-// ver 2.0  2023/09/29  カウンターナッジ対策/Arduino Uno R4で動作確認
+// ver 2.0  2023/09/29  Arduino Uno R4で動作確認
+//                      手前ナッジを実装/カウンターナッジ対策
+//                      手前左ボタンをパワー使用ボタンに変更
 //------------------------------------------------------------------------------
 
 #include "Keyboard.h"
@@ -23,13 +25,14 @@
 //       その場合はあらかじめゲームのキー設定で認識できるキーに設定を変更してください。
 
 //      定義名      送信するキー           機能
-#define KB_ST       KEY_ESC             // スタート(ポーズ)
+#define KB_ST       'z'                 // パワーを使用
 #define KB_PL       KEY_RETURN          // プランジャー
-#define KB_FL       KEY_LEFT_SHIFT      // 左フリッパー
-#define KB_FR       KEY_RIGHT_SHIFT     // 右フリッパー
-#define KB_NL       KEY_LEFT_ALT        // 左からナッジ
-#define KB_NR       KEY_RIGHT_ALT       // 右からナッジ
-#define KB_NU       ' '                 // 上へナッジ
+#define KB_FL       'q'                 // 左フリッパー
+#define KB_FR       'e'                 // 右フリッパー
+#define KB_NL       'a'                 // 左からナッジ
+#define KB_NR       'd'                 // 右からナッジ
+#define KB_NU       'w'                 // 上へナッジ
+#define KB_ND       's'                 // 下へナッジ
 
 //------------------------------------------------------------------------------
 // ナッジ（アナログ）の設定
@@ -57,14 +60,13 @@
 // 入力端子を変えたときは、ここの設定を変更してください。
 
 //      スケッチ内の名前    端子番号
-#define PI_START            A1          // スタートボタン入力端子
+#define PI_START            A1          // パワー使用ボタン入力端子
 #define PI_PLUNGER          A4          // プランジャー入力端子
 #define PI_FLIPPER_LEFT     A0          // 左フリッパー入力端子
 #define PI_FLIPPER_RIGHT    A5          // 右フリッパー入力端子
 
 #define PI_NUDGE_X          A3          // 横ナッジ入力端子（アナログ）
 #define PI_NUDGE_Y          A2          // 縦ナッジ入力端子（アナログ）
-
 
 //------------------------------------------------------------------------------
 // グローバル変数
@@ -81,7 +83,7 @@ void setup() {
   
   // デジタル入力ピン設定
   // ボタンに繋がるピンを入力に設定し、全てプルアップします。
-  pinMode( PI_START        , INPUT_PULLUP );    // スタートボタン入力端子
+  pinMode( PI_START        , INPUT_PULLUP );    // パワー使用入力端子
   pinMode( PI_PLUNGER      , INPUT_PULLUP );    // プランジャー入力端子
   pinMode( PI_FLIPPER_LEFT , INPUT_PULLUP );    // 左フリッパー入力端子
   pinMode( PI_FLIPPER_RIGHT, INPUT_PULLUP );    // 右フリッパー入力端子
@@ -105,6 +107,7 @@ void loop() {
   static int NudgeBuff_Left  = 0;                        // 左ナッジ残りフレーム数
   static int NudgeBuff_Right = 0;                        // 右ナッジ残りフレーム数
   static int NudgeBuff_Up    = 0;                        // 上ナッジ残りフレーム数
+  static int NudgeBuff_Down  = 0;                        // 下ナッジ残りフレーム数
   
   // キーバッファクリア
   for(int i=0; i<256; i++ ){
@@ -141,7 +144,7 @@ void loop() {
   
   // 上ナッジ（アナログ）
   // ナッジ検出
-  if( iAccY > SENSE_CENTER_Y + SENSE_NUDGE_Y )
+  if( iAccY > SENSE_CENTER_Y + SENSE_NUDGE_Y && NudgeBuff_Down == 0 )
     NudgeBuff_Up = NUDGE_TIMESPAN;                      // 上ナッジ残り時間セット
   // ナッジ持続判定
   if( NudgeBuff_Up > 0 ){
@@ -149,11 +152,21 @@ void loop() {
     NudgeBuff_Up--;                                     // 上ナッジ残り時間を減らす
   }
   
+  // 下ナッジ（アナログ）
+  // ナッジ検出
+  if( iAccY < SENSE_CENTER_Y - SENSE_NUDGE_Y && NudgeBuff_Up == 0 )
+    NudgeBuff_Down = NUDGE_TIMESPAN;                    // 下ナッジ残り時間セット
+  // ナッジ持続判定
+  if( NudgeBuff_Down > 0 ){
+    KEY_BUFFER[ KB_ND ] = 1;                            // キーバッファをON
+    NudgeBuff_Down--;                                   // 上ナッジ残り時間を減らす
+  }
+  
   //----------------------------------------------------------------------------
   // デジタル入力の処理
   //----------------------------------------------------------------------------
   
-  // スタートボタン
+  // パワー使用ボタン
   if( digitalRead( PI_START ) == LOW )
     KEY_BUFFER[ KB_ST ] = 1;                            // キーバッファをON
   
